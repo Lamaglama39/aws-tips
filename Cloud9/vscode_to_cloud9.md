@@ -18,8 +18,7 @@ cd /User/user_name/.ssh
 ssh-keygen -f cloud9
 ```
 Add Cloud9 connection point to ssh configuration file.
-<br>
-vim ~/.ssh/config
+> vim ~/.ssh/config
 ```
 Host cloud9
   HostName <EC2 PublicIP address>
@@ -37,8 +36,7 @@ aws ec2 authorize-security-group-ingress --group-id < SGID > --protocol tcp --po
 ***
 # Cloud9 Config
 Append the public key created by vscode.
-<br>
-vim ~/.ssh/authorized/authorized_keys
+> vim ~/.ssh/authorized/authorized_keys
 ```
 #
 # Add any additional keys below this line
@@ -46,8 +44,7 @@ vim ~/.ssh/authorized/authorized_keys
 ssh-rsa *********************************
 ```
 Edit sshd configuration file to allow key authentication
-<br>
-vim /etc/ssh/sshd_config
+> vim /etc/ssh/sshd_config
 ```
 RSAAuthentication yes
 PubkeyAuthentication yes
