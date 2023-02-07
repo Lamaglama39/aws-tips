@@ -1,4 +1,39 @@
 # EC2
+# Get a list of EC2s and the ssh command to connect to them
+```
+aws ec2 describe-instances \
+  | jq -r '.Reservations[].Instances[] | [[.Tags[] | select(.Key == "Name").Value][0], "ssh ec2-user@" + .NetworkInterfaces[].Association.PublicIp + " -i ~/.ssh/cloud9"] | @tsv' \
+  | column -t -s "`printf '\t'`"
+```
+# SSM connect
+```
+aws ssm start-session \
+  --target i-XXXXXXXXXXXX
+```
+# View instance list and status
+```
+aws ec2 describe-instances \
+ --max-items 1000\
+ --query 'Reservations[].Instances[].{
+     InstanceId:InstanceId,
+     InstanceType:InstanceType,
+     State: State.Name,
+     Name:Tags[?Key==`Name`]|[0].Value,
+     ASG:Tags[?Key==`aws:autoscaling:groupName`]|[0].Value
+     }'\
+ --output table
+```
+# Obtain the latest ECS-optimized AMI ID
+```
+aws ssm get-parameters --names "/aws/service/ecs/optimized-ami/amazon-linux/recommended" --query "Parameters[0].Value" --output text --region ap-northeast-1 | jq -r .image_id
+```
+
+# Obtain the EC2 instance ID that is running in elasticbeanstalk
+```
+aws elasticbeanstalk describe-environment-resources --environment-name YOUR ENVIRONMENT NAME | jq '.EnvironmentResources.Instances[].Id'
+CloudTrail
+```
+
 ## Obtaining the Name tag of an EC2 instance
 ```
 aws ec2 describe-instances --instance-ids INSTANCE_ID --query 'Reservations[].Instances[].Tags[?Key==`Name`].Value' --output text
